@@ -90,7 +90,7 @@
                   </Button>
                </children>
             </HBox>
-            <TableView fx:id="tbCurso" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+            <TableView fx:id="tbDisciplina" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
               <columns>
                 <TableColumn fx:id="colCodigo" prefWidth="75.0" text="Código" />
                 <TableColumn fx:id="colDescricao" prefWidth="364.0" text="Descrição" />

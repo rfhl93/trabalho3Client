@@ -17,14 +17,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.univel.model.Curso;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class CursoController implements Initializable {
 
@@ -35,7 +40,7 @@ public class CursoController implements Initializable {
     private TextField txfCargaHoraria;
 
     @FXML
-    private TableColumn<Curso, Integer> colCodigo;
+    private TableColumn<Curso, Long> colCodigo;
 
     @FXML
     private Button btnVoltar;
@@ -61,7 +66,7 @@ public class CursoController implements Initializable {
     private List<Curso> cursos = new ArrayList<Curso>();
 	
 	public void initialize(URL location, ResourceBundle resources) {
-		// Inicializar componentes.
+		buscarCursos();
 	}
 	
     @FXML
@@ -86,7 +91,7 @@ public class CursoController implements Initializable {
 			curso.setCargaHoraria(Integer.parseInt(txfCargaHoraria.getText()));
 			
 			String json;
-			ClientRequest request = new ClientRequest("");
+			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/trabalho3/rest/cursos");
 			request.accept("application/json");
 			
 			ObjectMapper map = new ObjectMapper();
@@ -110,10 +115,10 @@ public class CursoController implements Initializable {
 	private void buscarCursos() {
 		try {
 			cursos.clear();
-			ClientRequest request = new ClientRequest("");
+			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/trabalho3/rest/cursos");
 			request.accept("application/json");
 			
-			ClientResponse<String> response = request.post(String.class);
+			ClientResponse<String> response = request.get(String.class);
 			if (response.getStatus() != 200) {
 				throw new RuntimeException("Failed: HTTP error code: " + response.getStatus());
 			}
@@ -141,8 +146,14 @@ public class CursoController implements Initializable {
 	}
 
 	private void atualizarTabela() {
-		// Implementar.
-		
+		if (!cursos.isEmpty()) {
+			List<Curso> listaCursos = cursos;
+			tbCurso.getItems().clear();
+			colCodigo.setCellValueFactory(new PropertyValueFactory<Curso, Long>("id"));
+			colDescricao.setCellValueFactory(new PropertyValueFactory<Curso, String>("descricao"));
+			colCargaHoraria.setCellValueFactory(new PropertyValueFactory<Curso, Integer>("cargaHoraria"));
+			tbCurso.setItems(FXCollections.observableArrayList(listaCursos));
+		}
 	}
 
 	@FXML
@@ -151,7 +162,13 @@ public class CursoController implements Initializable {
     }
 
 	private void voltar() {
-		// Implementar.
+    	try {
+			Parent root = FXMLLoader.load(getClass().getResource("/br/univel/view/PrincipalView.fxml"));
+			MainController.PRIMARYSTAGE.setScene(new Scene(root));
+			MainController.PRIMARYSTAGE.centerOnScreen();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

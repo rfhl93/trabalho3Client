@@ -9,14 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 import org.apache.http.client.ClientProtocolException;
 import org.jboss.resteasy.client.ClientRequest;
@@ -33,7 +38,7 @@ public class DisciplinaController implements Initializable {
     private Button btnSalvar;
 
     @FXML
-    private TableColumn<Disciplina, Integer> colCodigo;
+    private TableColumn<Disciplina, Long> colCodigo;
 
     @FXML
     private TableColumn<Disciplina, Integer> colNumeroAulas;
@@ -51,7 +56,7 @@ public class DisciplinaController implements Initializable {
     private TextField txfNumeroAulas;
 
     @FXML
-    private TableView<Disciplina> tbCurso;
+    private TableView<Disciplina> tbDisciplina;
 
     @FXML
     private Button btnNovo;
@@ -62,8 +67,7 @@ public class DisciplinaController implements Initializable {
     private List<Disciplina> disciplinas = new ArrayList<Disciplina>();
 	
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-		
+		buscarDisciplinas();
 	}
 	
     @FXML
@@ -72,7 +76,8 @@ public class DisciplinaController implements Initializable {
     }
 
     private void novo() {
-		// Implementar.
+		txfDescricao.setText("");
+		txfNumeroAulas.setText("");
 	}
 
 	@FXML
@@ -87,7 +92,7 @@ public class DisciplinaController implements Initializable {
 			disciplina.setNumeroAulas(Integer.parseInt(txfNumeroAulas.getText()));
 			
 			String json;
-			ClientRequest request = new ClientRequest("");
+			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/trabalho3/rest/disciplinas");
 			request.accept("application/json");
 			
 			ObjectMapper map = new ObjectMapper();
@@ -111,10 +116,10 @@ public class DisciplinaController implements Initializable {
 	private void buscarDisciplinas() {
 		try {
 			disciplinas.clear();
-			ClientRequest request = new ClientRequest("");
+			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/trabalho3/rest/disciplinas");
 			request.accept("application/json");
 			
-			ClientResponse<String> response = request.post(String.class);
+			ClientResponse<String> response = request.get(String.class);
 			if (response.getStatus() != 200) {
 				throw new RuntimeException("Failed: HTTP error code: " + response.getStatus());
 			}
@@ -142,8 +147,14 @@ public class DisciplinaController implements Initializable {
 	}
 
 	private void atualizarTabela() {
-		// Implementar.
-		
+		if (!disciplinas.isEmpty()) {
+			List<Disciplina> listaCursos = disciplinas;
+			tbDisciplina.getItems().clear();
+			colCodigo.setCellValueFactory(new PropertyValueFactory<Disciplina, Long>("id"));
+			colDescricao.setCellValueFactory(new PropertyValueFactory<Disciplina, String>("descricao"));
+			colNumeroAulas.setCellValueFactory(new PropertyValueFactory<Disciplina, Integer>("numeroAulas"));
+			tbDisciplina.setItems(FXCollections.observableArrayList(listaCursos));
+		}
 	}
 
 	@FXML
@@ -152,7 +163,13 @@ public class DisciplinaController implements Initializable {
     }
 
 	private void voltar() {
-		// Implementar.
+    	try {
+			Parent root = FXMLLoader.load(getClass().getResource("/br/univel/view/PrincipalView.fxml"));
+			MainController.PRIMARYSTAGE.setScene(new Scene(root));
+			MainController.PRIMARYSTAGE.centerOnScreen();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
