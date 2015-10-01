@@ -91,7 +91,7 @@ public class CursoController implements Initializable {
 			curso.setCargaHoraria(Integer.parseInt(txfCargaHoraria.getText()));
 			
 			String json;
-			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/trabalho3/rest/cursos");
+			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/rest/cursos");
 			request.accept("application/json");
 			
 			ObjectMapper map = new ObjectMapper();
@@ -115,7 +115,7 @@ public class CursoController implements Initializable {
 	private void buscarCursos() {
 		try {
 			cursos.clear();
-			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/trabalho3/rest/cursos");
+			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/rest/cursos");
 			request.accept("application/json");
 			
 			ClientResponse<String> response = request.get(String.class);

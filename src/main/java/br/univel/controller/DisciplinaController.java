@@ -92,7 +92,7 @@ public class DisciplinaController implements Initializable {
 			disciplina.setNumeroAulas(Integer.parseInt(txfNumeroAulas.getText()));
 			
 			String json;
-			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/trabalho3/rest/disciplinas");
+			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/rest/disciplinas");
 			request.accept("application/json");
 			
 			ObjectMapper map = new ObjectMapper();
@@ -116,7 +116,7 @@ public class DisciplinaController implements Initializable {
 	private void buscarDisciplinas() {
 		try {
 			disciplinas.clear();
-			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/trabalho3/rest/disciplinas");
+			ClientRequest request = new ClientRequest("http://trabalho3-rfhl93.rhcloud.com/rest/disciplinas");
 			request.accept("application/json");
 			
 			ClientResponse<String> response = request.get(String.class);
